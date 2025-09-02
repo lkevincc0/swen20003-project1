@@ -1,0 +1,80 @@
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs
+hs_err_pid*
+replay_pid*
+
+# ===== macOS =====
+.DS_Store
+.AppleDouble
+.LSOverride
+__MACOSX/
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# ===== IntelliJ IDEA =====
+.idea/
+*.iml
+out/
+
+# ===== VS Code =====
+.vscode/
+.history/
+
+# ===== Maven / Gradle Build =====
+target/
+build/
+
+# ===== Temp Files =====
+*.swp
+*.swo
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# NetBeans
+nbproject/
+
+# Gradle
+.gradle/
+build/
+
+# Maven wrapper
+.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+
+# JUnit / TestNG reports
+test-output/
+surefire-reports/
+
+# Coverage reports
+*.lcov
+*.coverage
+
