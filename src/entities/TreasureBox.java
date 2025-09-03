@@ -45,25 +45,6 @@ public class TreasureBox {
         return openedMap;
     }
 
-    // get coin value by position
-    public int getCoins(Point pos) {
-        return boxMap.getOrDefault(pos, 0);
-    }
-
-    // get isOpened
-    public boolean isOpened(Point pos) {
-        return openedMap.getOrDefault(pos, true);
-    }
-
-    // if open, mark
-    public int openBox(Point pos) {
-        if (boxMap.containsKey(pos) && !openedMap.get(pos)) {
-            openedMap.put(pos, true);
-            return boxMap.get(pos);
-        }
-        return 0;
-    }
-
     public void draw() {
         for (Map.Entry<Point, Integer> entry : boxMap.entrySet()) {
             Point position = entry.getKey();

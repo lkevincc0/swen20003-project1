@@ -85,7 +85,7 @@ public class BattleRoomA {
         doorToPrep = new Door(gameProps, "primarydoor.A");
         doorToB = new Door(gameProps, "secondarydoor.A");
         enemy = new Enemies(gameProps, "keyBulletKin.A");
-        // add Treasure behind
+        box = new TreasureBox(gameProps, "treasurebox.A");
     }
 
     // update

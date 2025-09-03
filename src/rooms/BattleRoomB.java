@@ -22,7 +22,7 @@ public class BattleRoomB {
     // river
     private final River river;
     // box
-    private final TreasureBox box;
+    private TreasureBox box;
 
     private boolean encounterStarted = false;
 
@@ -86,7 +86,7 @@ public class BattleRoomB {
         enemy = new Enemies(gameProps, "keyBulletKin.B");
         doorToA = new Door(gameProps, "primarydoor.B");
         doorToEnd = new Door(gameProps, "secondarydoor.B");
-        // add Treasure behind
+        box = new TreasureBox(gameProps, "treasurebox.B");
     }
 
     public void update(Input input) {
