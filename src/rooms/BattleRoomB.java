@@ -5,10 +5,7 @@ import bagel.Input;
 import bagel.Keys;
 import bagel.Window;
 import bagel.util.Point;
-import entities.Door;
-import entities.Enemies;
-import entities.River;
-import entities.Wall;
+import entities.*;
 
 import java.util.Properties;
 
@@ -23,6 +20,8 @@ public class BattleRoomB {
     private final Wall wall;
     // river
     private final River river;
+    // box
+    private final TreasureBox box;
 
     private boolean encounterStarted = false;
 
@@ -42,6 +41,9 @@ public class BattleRoomB {
 
         // river
         this.river = new River(gameProps, "river.B");
+
+        // door
+        this.box = new TreasureBox(gameProps, "treasurebox.B");
     }
 
     /* Fetch the entities */
@@ -116,5 +118,8 @@ public class BattleRoomB {
 
         // rivers
         river.draw();
+
+        // box
+        box.draw();
     }
 }

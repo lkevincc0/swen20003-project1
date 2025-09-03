@@ -127,6 +127,7 @@ public class Player {
                 }
             }
         }
+        // box
         position = new Point(x, y);
     }
 
