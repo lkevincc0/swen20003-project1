@@ -1,5 +1,6 @@
 # Shadow Dungeon - Project 1
-
+## Note:
+### My earlier commits show my GitHub username due to config. Latest commit uses my username of uni gitlab.
 ## Progress Log
 
 - **2/9/2025**: Start Project, Create Rooms and Doors class,  
@@ -14,3 +15,5 @@
 - **3/9/2025** Create Hashmap to save treasure box, draw the Treasure Box in Room.
 - **3/9/2025** Complete the logic of treasure box of player.
 - **3/9/2025** add the logic of treasure box in reset game, box should be done
+- **4/9/2025** fix some wrong spell, repeat, unused func according to IDE hint, format code, clean main function's 
+  "PlayerUpdate" part with building a record "PlayerUpdateConfig", and add git logs.

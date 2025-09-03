@@ -26,7 +26,7 @@ public class BattleRoomB {
 
     private boolean encounterStarted = false;
 
-    public BattleRoomB(Properties gameProps, Properties messageProps) {
+    public BattleRoomB(Properties gameProps) {
         // background
         this.background = new Image("res/background.png");
 

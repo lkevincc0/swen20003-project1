@@ -31,11 +31,6 @@ public class TreasureBox {
         }
     }
 
-    // get all positions
-    public Point[] getPositions() {
-        return boxMap.keySet().toArray(new Point[0]);
-    }
-
     // get hashmaps
     public Map<Point, Integer> getBoxMap() {
         return boxMap;

@@ -34,16 +34,12 @@ public class River {
 
     // get river status
     public boolean isRiver() {
-        if (positions.length == 0 || positions == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return positions.length != 0;
     }
 
     // draw
     public void draw() {
-        if (positions == null || positions.length == 0) { return; }
+        if (positions == null) { return; }
         for (Point position: positions) {
             riverImage.draw(position.x, position.y);
         }

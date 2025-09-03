@@ -1,13 +1,12 @@
 import bagel.*;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import bagel.util.Point;
 import entities.Door;
 import entities.Enemies;
 import entities.PlayerUI;
+import utils.PlayerUpdateConfig;
 import utils.ReadDoor;
 import entities.Player;
 import rooms.BattleRoomA;
@@ -55,9 +54,9 @@ public class ShadowDungeon extends AbstractGame {
 
         /* Room */
         this.prepRoom = new PrepRoom(gameProps, messageProps);
-        this.battleRoomA = new BattleRoomA(gameProps, messageProps);
-        this.battleRoomB = new BattleRoomB(gameProps,messageProps);
-        this.endRoom = new EndRoom(gameProps, messageProps, player);
+        this.battleRoomA = new BattleRoomA(gameProps);
+        this.battleRoomB = new BattleRoomB(gameProps);
+        this.endRoom = new EndRoom(gameProps);
 
         /* UI */
         this.playerUI = new PlayerUI(gameProps);
@@ -119,18 +118,12 @@ public class ShadowDungeon extends AbstractGame {
     * If no points and isWall and isRiver,
     * just use 'playerUpdate(input, new Point[0], false, new Point[0], false);'
     */
-    private void playerUpdate(Input input,
-                              Point[] wallBoundaries,
-                              boolean isWall,
-                              Point[] riverBoundaries,
-                              boolean isRiver,
-                              Point[] restartBoundaries,
-                              boolean isRestart,
-                              boolean isBox,
-                              Map<Point, Integer> boxMap,
-                              Map<Point, Boolean> openedMap) {
-        // 3 pixels per frame for player
-        player.update(input, wallBoundaries, isWall, riverBoundaries, isRiver, restartBoundaries, isRestart, isBox, boxMap, openedMap);
+    private void playerUpdate(Input input, PlayerUpdateConfig conf) {
+        player.update(input,
+                conf.wallBoundaries(), conf.isWall(),
+                conf.riverBoundaries(), conf.isRiver(),
+                conf.restartBoundaries(), conf.isRestart(),
+                conf.isBox(), conf.boxMap(), conf.openedMap());
     }
 
     /* Game Reset */
@@ -156,14 +149,7 @@ public class ShadowDungeon extends AbstractGame {
             case "prep":
                 prepRoom.update(input);
                 positionUpdate(prepRoom.getDoors());
-                playerUpdate(input,
-                        new Point[0], false,
-                        new Point[0], false,
-                        prepRoom.getRestartPosition(), true,
-                        false,
-                        new HashMap<Point, Integer>(),
-                        new HashMap<Point, Boolean>()
-                );
+                playerUpdate(input, PlayerUpdateConfig.forPrep(prepRoom.getRestartPosition()));
                 if (player.Restart) {
                     currRoom = "prep";
                     resetGame(GAME_PROPS);
@@ -174,16 +160,11 @@ public class ShadowDungeon extends AbstractGame {
                 battleRoomA.update(input);
                 positionUpdate(battleRoomA.getDoors());
                 enemiesUpdate(battleRoomA.getEnemies());
-                playerUpdate(input,
-                        battleRoomA.getWallPositions(),
-                        battleRoomA.isWall(),
-                        battleRoomA.getRiverPositions(),
-                        battleRoomA.isRiver(),
-                        new Point[0],
-                        false,
-                        true,
-                        battleRoomA.getTreasureBoxes(),
-                        battleRoomA.getTreasureStatus());
+                playerUpdate(input, PlayerUpdateConfig.forBattle(
+                        battleRoomA.getWallPositions(), battleRoomA.isWall(),
+                        battleRoomA.getRiverPositions(), battleRoomA.isRiver(),
+                        battleRoomA.getTreasureBoxes(), battleRoomA.getTreasureStatus()
+                ));
                 if (player.getHealth() <= 0) {
                     currRoom = "end";
                     endRoom.closeDoor();
@@ -193,16 +174,11 @@ public class ShadowDungeon extends AbstractGame {
                 battleRoomB.update(input);
                 positionUpdate(battleRoomB.getDoors());
                 enemiesUpdate(battleRoomB.getEnemies());
-                playerUpdate(input,
-                        battleRoomB.getWallPositions(),
-                        battleRoomB.isWall(),
-                        battleRoomB.getRiverPositions(),
-                        battleRoomB.isRiver(),
-                        new Point[0],
-                        false,
-                        true,
-                        battleRoomB.getTreasureBoxes(),
-                        battleRoomB.getTreasureStatus());
+                playerUpdate(input, PlayerUpdateConfig.forBattle(
+                        battleRoomB.getWallPositions(), battleRoomB.isWall(),
+                        battleRoomB.getRiverPositions(), battleRoomB.isRiver(),
+                        battleRoomB.getTreasureBoxes(), battleRoomB.getTreasureStatus()
+                ));
                 if (player.getHealth() <= 0) {
                     currRoom = "end";
                     endRoom.closeDoor();
@@ -211,16 +187,7 @@ public class ShadowDungeon extends AbstractGame {
             case "end":
                 endRoom.update(input, player, MESSAGE_PROPS);
                 positionUpdate(endRoom.getDoors());
-                playerUpdate(input,
-                        new Point[0],
-                        false,
-                        new Point[0],
-                        false,
-                        endRoom.getRestartPosition(),
-                        true,
-                        false,
-                        new HashMap<Point, Integer>(),
-                        new HashMap<Point, Boolean>());
+                playerUpdate(input, PlayerUpdateConfig.forEnd(endRoom.getRestartPosition()));
                 if (player.Restart) {
                     currRoom = "prep";
                     resetGame(GAME_PROPS);
@@ -235,7 +202,7 @@ public class ShadowDungeon extends AbstractGame {
 
     /**
      * The main entry point of the Shadow Dungeon game.
-     *
+     * <p>
      * This method loads the game properties and message files, initializes the game,
      * and starts the game loop.
      *

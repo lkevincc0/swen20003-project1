@@ -15,8 +15,8 @@ public class Player {
     private double health;
     private int coins;
     private int speed;
-    private Image playerLeft;
-    private Image playerRight;
+    private final Image playerLeft;
+    private final Image playerRight;
     private boolean facingRight;
 
     // game logic
@@ -177,16 +177,16 @@ public class Player {
     // get values
     public double getHealth() { return health; }
     public int getCoins() { return coins; }
-    public void addCoins(int val) { coins += val; };
+    public void addCoins(int val) { coins += val; }
 
     // reset function
     public void reset(Properties gameProps) {
         String posParams = gameProps.getProperty("player.start");
         String[] posParts = posParams.split(",");
         position = new Point(Double.parseDouble(posParts[0]), Double.parseDouble(posParts[1]));
-        health = Integer.parseInt(gameProps.getProperty("initialHealth"));;
-        coins = Integer.parseInt(gameProps.getProperty("initialCoins"));;
-        speed = Integer.parseInt(gameProps.getProperty("movingSpeed"));;
+        health = Integer.parseInt(gameProps.getProperty("initialHealth"));
+        coins = Integer.parseInt(gameProps.getProperty("initialCoins"));
+        speed = Integer.parseInt(gameProps.getProperty("movingSpeed"));
     }
 
     // update function
@@ -204,11 +204,7 @@ public class Player {
         /* Regular update during game */
         move(input, wallBoundaries, isWall, riverBoundaries, isRiver, restartBoundaries, isRestart, isBox, boxMap, openedMap);
         Point mouse = input.getMousePosition();
-        if (mouse.x >= position.x) {
-            facingRight = true;
-        } else {
-            facingRight = false;
-        }
+        facingRight = mouse.x >= position.x;
         draw();
     }
 }

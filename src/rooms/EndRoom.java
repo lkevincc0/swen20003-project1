@@ -13,14 +13,13 @@ public class EndRoom {
     private final Point restartPosition;
 
     private final Font titleFont;
-    private String titleMessage;
     private final double titleY;
 
     private Door doorToB;
     private boolean isAlive = true;
 
 
-    public EndRoom(Properties gameProps, Properties messageProps, Player player) {
+    public EndRoom(Properties gameProps) {
         // background
         this.background = new Image("res/background.png");
 
@@ -46,8 +45,7 @@ public class EndRoom {
     }
 
     public Door[] getDoors() {
-        Door[] doors = {doorToB};
-        return doors;
+        return new Door[]{doorToB};
     }
 
     // get restart position
@@ -66,6 +64,7 @@ public class EndRoom {
 
     public void update(Input input, Player player, Properties messageProps) {
         // text content
+        String titleMessage;
         if (isAlive) {
             titleMessage = messageProps.getProperty("gameEnd.won");
         } else {
@@ -89,10 +88,6 @@ public class EndRoom {
         doorToB.draw();
 
         // player status
-        if (player.getHealth() > 0) {
-            isAlive = true;
-        } else {
-            isAlive = false;
-        }
+        isAlive = player.getHealth() > 0;
     }
 }

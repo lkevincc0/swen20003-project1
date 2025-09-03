@@ -55,8 +55,7 @@ public class PrepRoom {
 
     // get all doors in room
     public Door[] getDoors() {
-        Door[] doors = {doorToA};
-        return doors;
+        return new Door[]{doorToA};
     }
 
     // get restart positon

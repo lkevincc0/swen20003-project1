@@ -14,8 +14,8 @@ public class Door {
     private final String doorConfig;
     /*
     * accept a string to set up the config
-    * @param is gmaeProps and doorConfig,
-    * e.g. "doorToEnd = new Door(gameProps, "secondarydoor.B");"
+    * @param is gameProps and doorConfig,
+    * e.g. doorToEnd = new Door(gameProps, "secondarydoor.B");
     */
     public Door(Properties gameProps, String doorConfig) {
         this.doorConfig = doorConfig;
@@ -30,8 +30,7 @@ public class Door {
     public String getDoorConfig() {
         return doorConfig;
     }
-    // get door position
-    public Point getPosition() { return position; }
+
     // get target room
     public String getTargetRoom() { return targetRoom; }
     // unlock or lock door
@@ -41,11 +40,7 @@ public class Door {
     // animation of open or close the door
     public void doDoor() {
         // open, close; close, open;
-        if (locked) {
-            locked = false;
-        } else {
-            locked = true;
-        }
+        locked = !locked;
     }
 
     public Rectangle getBoundingBox() {

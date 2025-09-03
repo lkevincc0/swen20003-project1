@@ -33,16 +33,12 @@ public class Wall {
 
     // get wall status
     public boolean isWall() {
-        if (positions.length == 0 || positions == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return positions.length != 0;
     }
 
     // draw
     public void draw() {
-        if (positions == null || positions.length == 0) { return; }
+        if (positions == null) { return; }
         for (Point position: positions) {
             wallImage.draw(position.x, position.y);
         }
