@@ -25,9 +25,8 @@ public class Enemies {
         return body.getBoundingBoxAt(position);
     }
 
-    public void kill() {
-        alive = false;
-    }
+    public boolean getStatus() { return alive; }
+    public void kill() { alive = false; }
 
     public void draw() {
         if (alive) {

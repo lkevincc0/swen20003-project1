@@ -17,6 +17,7 @@ public class ReadDoor {
             rawMap.put(key, gameProps.getProperty(key));
         }
 
+        // create hashmap
         link("door.prep", "primarydoor.A", rawMap);
         link("primarydoor.A", "door.prep", rawMap);
 
@@ -32,6 +33,7 @@ public class ReadDoor {
         exitPoints.put(b, parsePoint(rawMap.get(a)));
     }
 
+    // turn string point into double point
     private Point parsePoint(String raw) {
         if (raw == null) return null;
         String[] parts = raw.split(",");
@@ -41,6 +43,7 @@ public class ReadDoor {
         return new Point(x, y);
     }
 
+    // get exit point
     public static Point getExit(String entry) {
         return exitPoints.get(entry);
     }

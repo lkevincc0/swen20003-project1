@@ -62,13 +62,14 @@ public class ShadowDungeon extends AbstractGame {
     */
     private void positionUpdate(Door[] doors) {
         for (Door door : doors) {
-            if (!door.isLocked() && player.getBoundingBox().intersects(door.getBoundingBox())) {
+            if (!door.getIsLocked() && player.getBoundingBox().intersects(door.getBoundingBox())) {
                 if (!justEntered) {
                     // switch to room
                     currRoom = door.getTargetRoom();
                     // update player position
                     player.setPosition(ReadDoor.getExit(door.getDoorConfig()));
                     justEntered = true;
+                    door.unlock();
                 }
                 return;
             }
@@ -83,6 +84,16 @@ public class ShadowDungeon extends AbstractGame {
             }
         }
         if (!touchingAny) {
+            if (justEntered) {
+                // used for set war status and door animation
+                if (currRoom.equals("A")) {
+                    battleRoomA.setEncounterStarted();
+                }
+
+                if (currRoom.equals("B")) {
+                    battleRoomB.setEncounterStarted();
+                }
+            }
             justEntered = false;
         }
     }
@@ -94,6 +105,14 @@ public class ShadowDungeon extends AbstractGame {
         }
     }
 
+    // player update
+    // If no point and isBoundary, just use 'playerUpdate(input, new Point[0], false)'
+    private void playerUpdate(Input input, Point[] points, boolean isBoundary) {
+        // 3 pixels per frame for player
+        for (int i = 0; i < 3; i++) {
+            player.update(input, points, isBoundary);
+        }
+    }
     /**
      * Render the relevant screen based on the keyboard input given by the user and the status of the gameplay.
      * @param input The current mouse/keyboard input.
@@ -108,26 +127,25 @@ public class ShadowDungeon extends AbstractGame {
             case "prep":
                 prepRoom.update(input);
                 positionUpdate(prepRoom.getDoors());
+                playerUpdate(input, new Point[0], false);
                 break;
             case "A":
                 battleRoomA.update(input);
                 positionUpdate(battleRoomA.getDoors());
                 enemiesUpdate(battleRoomA.getEnemies());
+                playerUpdate(input, battleRoomA.getWallPositions(), battleRoomA.isWall());
                 break;
             case "B":
                 battleRoomB.update(input);
                 positionUpdate(battleRoomB.getDoors());
                 enemiesUpdate(battleRoomB.getEnemies());
+                playerUpdate(input, battleRoomB.getWallPositions(), battleRoomB.isWall());
                 break;
             case "end":
                 endRoom.update(input);
                 positionUpdate(endRoom.getDoors());
+                playerUpdate(input, new Point[0], false);
                 break;
-        }
-
-        // 3 pixels per frame for player
-        for (int i = 0; i < 3; i++) {
-            player.update(input);
         }
     }
 

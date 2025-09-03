@@ -15,6 +15,8 @@ public class Player {
     private Image playerLeft;
     private Image playerRight;
     private boolean facingRight;
+    // others
+    private Image wallImage;
 
     public Player(Point startPos, int health, int coins, int speed) {
         this.position = startPos;
@@ -24,9 +26,11 @@ public class Player {
         this.playerLeft = new Image("res/player_left.png");
         this.playerRight = new Image("res/player_right.png");
         this.facingRight = true;
+        // others
+        this.wallImage = new Image("res/wall.png");
     }
 
-    private void move(Input input) {
+    private void move(Input input, Point[] boundaries, boolean isWall) {
         /* according to input change position */
         double x = position.x;
         double y = position.y;
@@ -51,10 +55,36 @@ public class Player {
         }
 
         // boundaries
-        if (x < 0) x = 0;
-        if (x > Window.getWidth()) x = Window.getWidth();
-        if (y < 0) y = 0;
-        if (y > Window.getHeight()) y = Window.getHeight();
+        Rectangle playerBox = playerLeft.getBoundingBoxAt(new Point(x, y));
+
+        if (playerBox.left() < 0) {
+            x = position.x;
+        }
+
+        if (playerBox.right() > Window.getWidth()) {
+            x = position.x;
+        }
+
+        if (playerBox.top() < 0) {
+            y = position.y;
+        }
+
+        if (playerBox.bottom() > Window.getHeight()) {
+            y = position.y;
+        }
+
+        // boundaries of wall
+        // get rectangle of wall
+        if (isWall) {
+            for (Point wp : boundaries) {
+                Rectangle wallBox = wallImage.getBoundingBoxAt(wp);
+                if (playerBox.intersects(wallBox)) {
+                    x = position.x;
+                    y = position.y;
+                    break;
+                }
+            }
+        }
 
         position = new Point(x, y);
     }
@@ -83,9 +113,9 @@ public class Player {
     }
 
     // update function
-    public void update(Input input) {
+    public void update(Input input, Point[] boundaries, boolean isWall) {
         /* Regular update during game */
-        move(input);
+        move(input, boundaries, isWall);
         Point mouse = input.getMousePosition();
         if (mouse.x >= position.x) {
             facingRight = true;

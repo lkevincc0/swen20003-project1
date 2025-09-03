@@ -1,9 +1,7 @@
 package rooms;
 
 import bagel.*;
-import bagel.util.Point;
 import entities.Door;
-import entities.Player;
 
 import java.util.Properties;
 
@@ -65,7 +63,7 @@ public class PrepRoom {
         promptFont.drawString(moveMessage, promptX, moveMessageY);
 
 
-        if (input.wasPressed(Keys.R)) {
+        if (input.wasPressed(Keys.R) && doorToA.getIsLocked()) {
             doorToA.doDoor();
         }
         doorToA.draw();

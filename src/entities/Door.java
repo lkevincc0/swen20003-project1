@@ -12,7 +12,6 @@ public class Door {
     private final Point position;
     private final String targetRoom;
     private final String doorConfig;
-
     /*
     * accept a string to set up the config
     * @param is gmaeProps and doorConfig,
@@ -41,8 +40,11 @@ public class Door {
 
     // animation of open or close the door
     public void doDoor() {
+        // open, close; close, open;
         if (locked) {
             locked = false;
+        } else {
+            locked = true;
         }
     }
 
@@ -51,9 +53,7 @@ public class Door {
     }
 
     // get the door status
-    public boolean isLocked() {
-        return locked;
-    }
+    public boolean getIsLocked() { return locked; }
 
     // draw function
     public void draw() {

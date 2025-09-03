@@ -30,7 +30,8 @@ public class EndRoom {
         background.draw(Window.getWidth()/2.0, Window.getHeight()/2.0);
 
         // door
-        if (input.wasPressed(Keys.R)) {
+        doorToB.unlock();
+        if (input.wasPressed(Keys.R) && doorToB.getIsLocked()) {
             doorToB.doDoor();
         }
         doorToB.draw();
