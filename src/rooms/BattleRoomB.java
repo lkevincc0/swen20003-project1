@@ -15,10 +15,10 @@ import java.util.Properties;
 public class BattleRoomB {
     private final Image background;
     // door
-    private final Door doorToA;
-    private final Door doorToEnd;
+    private Door doorToA;
+    private Door doorToEnd;
     // enemy
-    private final Enemies enemy;
+    private Enemies enemy;
     // wall
     private final Wall wall;
     // river
@@ -46,15 +46,14 @@ public class BattleRoomB {
 
     /* Fetch the entities */
     public Door[] getDoors() {
-        Door[] doors = {doorToA, doorToEnd};
-        return doors;
+        return new Door[]{doorToA, doorToEnd};
     }
 
     public Enemies getEnemies() { return enemy; }
 
     // war status
     public void setEncounterStarted() {
-        if (encounterStarted == false) {
+        if (!encounterStarted) {
             encounterStarted = true;
         }
     }
@@ -70,6 +69,14 @@ public class BattleRoomB {
 
     // get all positions of river
     public Point[] getRiverPositions() { return river.getPositions(); }
+
+    // reset
+    public void reset(Properties gameProps) {
+        enemy = new Enemies(gameProps, "keyBulletKin.B");
+        doorToA = new Door(gameProps, "primarydoor.B");
+        doorToEnd = new Door(gameProps, "secondarydoor.B");
+        // add Treasure behind
+    }
 
     public void update(Input input) {
         // draw background

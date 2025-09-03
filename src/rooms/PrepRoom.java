@@ -21,7 +21,7 @@ public class PrepRoom {
     private final double titleY;
     private final double moveMessageY;
 
-    private final Door doorToA;
+    private Door doorToA;
 
     public PrepRoom(Properties gameProps, Properties messageProps) {
         // background
@@ -61,6 +61,10 @@ public class PrepRoom {
 
     // get restart positon
     public Point[] getRestartPosition() { return new Point[]{ restartPosition }; }
+
+    public void reset(Properties gameProps) {
+        doorToA = new Door(gameProps, "door.prep");
+    }
 
     public void update(Input input) {
         // draw background

@@ -7,6 +7,8 @@ import bagel.Window;
 import bagel.util.Point;
 import bagel.util.Rectangle;
 
+import java.util.Properties;
+
 public class Player {
     private Point position;
     private double health;
@@ -154,6 +156,16 @@ public class Player {
     // get values
     public double getHealth() { return health; }
     public double getCoins() { return coins; }
+
+    // reset function
+    public void reset(Properties gameProps) {
+        String posParams = gameProps.getProperty("player.start");
+        String[] posParts = posParams.split(",");
+        position = new Point(Double.parseDouble(posParts[0]), Double.parseDouble(posParts[1]));
+        health = Integer.parseInt(gameProps.getProperty("initialHealth"));;
+        coins = Integer.parseInt(gameProps.getProperty("initialCoins"));;
+        speed = Integer.parseInt(gameProps.getProperty("movingSpeed"));;
+    }
 
     // update function
     public void update(

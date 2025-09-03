@@ -127,6 +127,15 @@ public class ShadowDungeon extends AbstractGame {
         player.update(input, wallBoundaries, isWall, riverBoundaries, isRiver, restartBoundaries, isRestart);
     }
 
+    /* Game Reset */
+    private void resetGame(Properties gameProps) {
+        player.reset(gameProps);
+        prepRoom.reset(gameProps);
+        battleRoomA.reset(gameProps);
+        battleRoomB.reset(gameProps);
+        endRoom.reset(gameProps);
+    }
+
     /**
      * Render the relevant screen based on the keyboard input given by the user and the status of the gameplay.
      * @param input The current mouse/keyboard input.
@@ -143,9 +152,9 @@ public class ShadowDungeon extends AbstractGame {
                 positionUpdate(prepRoom.getDoors());
                 playerUpdate(input, new Point[0], false, new Point[0], false,
                         prepRoom.getRestartPosition(), true);
-                if (player.Restart == true) {
+                if (player.Restart) {
                     currRoom = "prep";
-                    System.out.println("restart");
+                    resetGame(GAME_PROPS);
                 }
                 player.Restart = false;
                 break;
@@ -157,6 +166,7 @@ public class ShadowDungeon extends AbstractGame {
                         battleRoomA.getRiverPositions(), battleRoomA.isRiver(), new Point[0], false);
                 if (player.getHealth() <= 0) {
                     currRoom = "end";
+                    endRoom.closeDoor();
                 }
                 break;
             case "B":
@@ -167,6 +177,7 @@ public class ShadowDungeon extends AbstractGame {
                         battleRoomB.getRiverPositions(), battleRoomB.isRiver(), new Point[0], false);
                 if (player.getHealth() <= 0) {
                     currRoom = "end";
+                    endRoom.closeDoor();
                 }
                 break;
             case "end":
@@ -174,9 +185,9 @@ public class ShadowDungeon extends AbstractGame {
                 positionUpdate(endRoom.getDoors());
                 playerUpdate(input, new Point[0], false, new Point[0], false,
                         endRoom.getRestartPosition(), true);
-                if (player.Restart == true) {
+                if (player.Restart) {
                     currRoom = "prep";
-                    System.out.println("restart");
+                    resetGame(GAME_PROPS);
                 }
                 player.Restart = false;
                 break;
