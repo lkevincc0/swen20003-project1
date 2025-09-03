@@ -17,7 +17,12 @@ public class EndRoom {
         background = new Image("res/background.png");
 
         // door to prep
-        doorToB = new Door(gameProps.getProperty("door.end"));
+        doorToB = new Door(gameProps, "door.end");
+    }
+
+    public Door[] getDoors() {
+        Door[] doors = {doorToB};
+        return doors;
     }
 
     public void update(Input input) {

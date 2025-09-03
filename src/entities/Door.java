@@ -2,6 +2,8 @@ package entities;
 
 import bagel.Image;
 import bagel.util.Point;
+import bagel.util.Rectangle;
+import java.util.Properties;
 
 public class Door {
     private boolean locked = true;
@@ -9,26 +11,51 @@ public class Door {
     private final Image doorUnlocked;
     private final Point position;
     private final String targetRoom;
+    private final String doorConfig;
 
-    public Door(String doorConfig) {
-        String[] parts = doorConfig.split(",");
-        this.position = new Point(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+    /*
+    * accept a string to set up the config
+    * @param is gmaeProps and doorConfig,
+    * e.g. "doorToEnd = new Door(gameProps, "secondarydoor.B");"
+    */
+    public Door(Properties gameProps, String doorConfig) {
+        this.doorConfig = doorConfig;
+        String raw = gameProps.getProperty(doorConfig);
+        String[] parts = raw.split(",");
+        this.position = new Point(Double.parseDouble(parts[0]), Double.parseDouble(parts[1]));
         this.targetRoom = parts[2];
         this.doorLocked = new Image("res/locked_door.png");
         this.doorUnlocked = new Image("res/unlocked_door.png");
     }
 
+    public String getDoorConfig() {
+        return doorConfig;
+    }
+    // get door position
+    public Point getPosition() { return position; }
+    // get target room
+    public String getTargetRoom() { return targetRoom; }
+    // unlock or lock door
+    public void lock() { locked = true; }
+    public void unlock() { locked = false; }
+
+    // animation of open or close the door
     public void doDoor() {
         if (locked) {
             locked = false;
-        } else {
-            locked = true;
         }
     }
-    public boolean isUnlocked() { return !locked; }
-    public String getTargetRoom() { return targetRoom; }
-    public Point getPosition() { return position; }
 
+    public Rectangle getBoundingBox() {
+        return (locked ? doorLocked : doorUnlocked).getBoundingBoxAt(position);
+    }
+
+    // get the door status
+    public boolean isLocked() {
+        return locked;
+    }
+
+    // draw function
     public void draw() {
         // door
         if (locked) {
@@ -36,6 +63,5 @@ public class Door {
         } else {
             doorUnlocked.draw(position.x, position.y);
         }
-
     }
 }

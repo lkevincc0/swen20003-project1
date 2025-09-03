@@ -1,6 +1,11 @@
 import bagel.*;
 import java.util.Properties;
 
+import bagel.util.Point;
+import entities.Door;
+import entities.Enemies;
+import utils.ReadDoor;
+import entities.Player;
 import rooms.BattleRoomA;
 import rooms.BattleRoomB;
 import rooms.EndRoom;
@@ -9,11 +14,17 @@ import rooms.PrepRoom;
 public class ShadowDungeon extends AbstractGame {
     private final Properties GAME_PROPS;
     private final Properties MESSAGE_PROPS;
-    private String currRoom = "end";
+
+    // rooms
+    private String currRoom = "prep";
     private final PrepRoom prepRoom;
     private final BattleRoomA battleRoomA;
     private final BattleRoomB battleRoomB;
     private final EndRoom endRoom;
+    private boolean justEntered = false;
+
+    // player
+    private final Player player;
 
     public ShadowDungeon(Properties gameProps, Properties messageProps) {
         super(Integer.parseInt(gameProps.getProperty("window.width")),
@@ -22,13 +33,66 @@ public class ShadowDungeon extends AbstractGame {
 
         this.GAME_PROPS = gameProps;
         this.MESSAGE_PROPS = messageProps;
-        // rooms
+        /* Room */
         this.prepRoom = new PrepRoom(gameProps, messageProps);
         this.battleRoomA = new BattleRoomA(gameProps, messageProps);
         this.battleRoomB = new BattleRoomB(gameProps,messageProps);
         this.endRoom = new EndRoom(gameProps, messageProps);
+
+        /* Player */
+        // position
+        String posParams = gameProps.getProperty("player.start");
+        String[] posParts = posParams.split(",");
+        Point playerPosition = new Point(Double.parseDouble(posParts[0]), Double.parseDouble(posParts[1]));
+        // health
+        int health = Integer.parseInt(gameProps.getProperty("initialHealth"));
+        // coins
+        int coins = Integer.parseInt(gameProps.getProperty("initialCoins"));
+        // speed
+        int speed = Integer.parseInt(gameProps.getProperty("movingSpeed"));
+        this.player = new Player(playerPosition, health, coins, speed);
+
+        // manage entry and exit point of door
+        new ReadDoor(gameProps);
     }
 
+    /*
+    * Used for update player's position after exit door
+    * @param doors - the door array which can get by method in door class
+    */
+    private void positionUpdate(Door[] doors) {
+        for (Door door : doors) {
+            if (!door.isLocked() && player.getBoundingBox().intersects(door.getBoundingBox())) {
+                if (!justEntered) {
+                    // switch to room
+                    currRoom = door.getTargetRoom();
+                    // update player position
+                    player.setPosition(ReadDoor.getExit(door.getDoorConfig()));
+                    justEntered = true;
+                }
+                return;
+            }
+        }
+
+        // only if player leave and retouch door above logic will be effected
+        boolean touchingAny = false;
+        for (Door door : doors) {
+            if (player.getBoundingBox().intersects(door.getBoundingBox())) {
+                touchingAny = true;
+                break;
+            }
+        }
+        if (!touchingAny) {
+            justEntered = false;
+        }
+    }
+
+    // used for enemies status update
+    private void enemiesUpdate(Enemies enemy) {
+        if (player.getBoundingBox().intersects(enemy.getBoundingBox())) {
+            enemy.kill();
+        }
+    }
 
     /**
      * Render the relevant screen based on the keyboard input given by the user and the status of the gameplay.
@@ -40,23 +104,32 @@ public class ShadowDungeon extends AbstractGame {
             Window.close();
         }
 
-        if (currRoom == "prep") {
-            prepRoom.update(input);
+        switch (currRoom) {
+            case "prep":
+                prepRoom.update(input);
+                positionUpdate(prepRoom.getDoors());
+                break;
+            case "A":
+                battleRoomA.update(input);
+                positionUpdate(battleRoomA.getDoors());
+                enemiesUpdate(battleRoomA.getEnemies());
+                break;
+            case "B":
+                battleRoomB.update(input);
+                positionUpdate(battleRoomB.getDoors());
+                enemiesUpdate(battleRoomB.getEnemies());
+                break;
+            case "end":
+                endRoom.update(input);
+                positionUpdate(endRoom.getDoors());
+                break;
         }
 
-        if (currRoom == "A") {
-            battleRoomA.update(input);
-        }
-
-        if (currRoom == "B") {
-            battleRoomB.update(input);
-        }
-
-        if (currRoom == "end") {
-            endRoom.update(input);
+        // 3 pixels per frame for player
+        for (int i = 0; i < 3; i++) {
+            player.update(input);
         }
     }
-
 
     /**
      * The main entry point of the Shadow Dungeon game.

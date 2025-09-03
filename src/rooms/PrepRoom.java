@@ -1,7 +1,9 @@
 package rooms;
 
 import bagel.*;
+import bagel.util.Point;
 import entities.Door;
+import entities.Player;
 
 import java.util.Properties;
 
@@ -40,8 +42,15 @@ public class PrepRoom {
         moveMessageY = Double.parseDouble(gameProps.getProperty("moveMessage.y"));
 
         // door to A
-        doorToA = new Door(gameProps.getProperty("door.prep"));
+        doorToA = new Door(gameProps, "door.prep");
     }
+
+    // get all doors in room
+    public Door[] getDoors() {
+        Door[] doors = {doorToA};
+        return doors;
+    }
+
 
     public void update(Input input) {
         // draw background
