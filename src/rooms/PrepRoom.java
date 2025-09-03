@@ -8,6 +8,7 @@ import java.util.Properties;
 
 public class PrepRoom {
     private final Image background;
+
     private final Font titleFont;
     private final Font promptFont;
 

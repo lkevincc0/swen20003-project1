@@ -9,16 +9,21 @@ import bagel.util.Rectangle;
 
 public class Player {
     private Point position;
-    private int health;
+    private double health;
     private int coins;
     private int speed;
     private Image playerLeft;
     private Image playerRight;
     private boolean facingRight;
-    // others
-    private Image wallImage;
 
-    public Player(Point startPos, int health, int coins, int speed) {
+    // const damage values
+    public final double riverDamagePerFrame = 0.2;
+
+    // others
+    private final Image wallImage;
+    private final Image riverImage;
+
+    public Player(Point startPos, double health, int coins, int speed) {
         this.position = startPos;
         this.health = health;
         this.coins = coins;
@@ -28,9 +33,14 @@ public class Player {
         this.facingRight = true;
         // others
         this.wallImage = new Image("res/wall.png");
+        this.riverImage = new Image("res/river.png");
     }
 
-    private void move(Input input, Point[] boundaries, boolean isWall) {
+    private void move(Input input,
+                      Point[] wallBoundaries,
+                      boolean isWall,
+                      Point[] riverBoundaries,
+                      boolean isRiver) {
         /* according to input change position */
         double x = position.x;
         double y = position.y;
@@ -76,12 +86,22 @@ public class Player {
         // boundaries of wall
         // get rectangle of wall
         if (isWall) {
-            for (Point wp : boundaries) {
+            for (Point wp : wallBoundaries) {
                 Rectangle wallBox = wallImage.getBoundingBoxAt(wp);
                 if (playerBox.intersects(wallBox)) {
                     x = position.x;
                     y = position.y;
                     break;
+                }
+            }
+        }
+        // river logic
+        if (isRiver) {
+            for (Point wp : riverBoundaries) {
+                Rectangle riverBox = riverImage.getBoundingBoxAt(wp);
+                if (playerBox.intersects(riverBox)) {
+                    health -= riverDamagePerFrame;
+                    System.out.println(health);
                 }
             }
         }
@@ -112,10 +132,19 @@ public class Player {
         }
     }
 
+    // get values
+    public double getHealth() { return health; }
+    public double getCoins() { return coins; }
+
     // update function
-    public void update(Input input, Point[] boundaries, boolean isWall) {
+    public void update(
+            Input input,
+            Point[] wallBoundaries,
+            boolean isWall,
+            Point[] riverBoundaries,
+            boolean isRiver) {
         /* Regular update during game */
-        move(input, boundaries, isWall);
+        move(input, wallBoundaries, isWall, riverBoundaries, isRiver);
         Point mouse = input.getMousePosition();
         if (mouse.x >= position.x) {
             facingRight = true;

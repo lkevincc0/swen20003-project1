@@ -7,6 +7,7 @@ import bagel.Window;
 import bagel.util.Point;
 import entities.Door;
 import entities.Enemies;
+import entities.River;
 import entities.Wall;
 
 import java.util.Properties;
@@ -20,6 +21,8 @@ public class BattleRoomA {
     private final Enemies enemy;
     // wall
     private final Wall wall;
+    // river
+    private final River river;
 
     private boolean encounterStarted = false;
 
@@ -36,6 +39,9 @@ public class BattleRoomA {
 
         // wall
         wall = new Wall(gameProps, "wall.A");
+
+        // river
+        river = new River(gameProps, "river.A");
     }
 
     // get entities in room
@@ -55,8 +61,14 @@ public class BattleRoomA {
     // wall status
     public boolean isWall() { return wall.isWall(); }
 
+    // river status
+    public boolean isRiver() { return river.isRiver(); }
+
     // get all positions of wall, exposed to players
     public Point[] getWallPositions() { return wall.getPositions(); }
+
+    // get all positions of river
+    public Point[] getRiverPositions() { return river.getPositions(); }
 
     public void update(Input input) {
         // draw background
@@ -82,6 +94,7 @@ public class BattleRoomA {
             }
         }
 
+        // if die unlock all door
         if (!enemy.getStatus()) {
             encounterStarted = false;
             doorToPrep.unlock();
@@ -93,5 +106,8 @@ public class BattleRoomA {
 
         // walls
         wall.draw();
+
+        // rivers
+        river.draw();
     }
 }

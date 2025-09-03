@@ -4,6 +4,7 @@ import java.util.Properties;
 import bagel.util.Point;
 import entities.Door;
 import entities.Enemies;
+import entities.PlayerUI;
 import utils.ReadDoor;
 import entities.Player;
 import rooms.BattleRoomA;
@@ -26,6 +27,9 @@ public class ShadowDungeon extends AbstractGame {
     // player
     private final Player player;
 
+    // player ui
+    private final PlayerUI playerUI;
+
     public ShadowDungeon(Properties gameProps, Properties messageProps) {
         super(Integer.parseInt(gameProps.getProperty("window.width")),
                 Integer.parseInt(gameProps.getProperty("window.height")),
@@ -45,12 +49,15 @@ public class ShadowDungeon extends AbstractGame {
         String[] posParts = posParams.split(",");
         Point playerPosition = new Point(Double.parseDouble(posParts[0]), Double.parseDouble(posParts[1]));
         // health
-        int health = Integer.parseInt(gameProps.getProperty("initialHealth"));
+        double health = Integer.parseInt(gameProps.getProperty("initialHealth"));
         // coins
         int coins = Integer.parseInt(gameProps.getProperty("initialCoins"));
         // speed
         int speed = Integer.parseInt(gameProps.getProperty("movingSpeed"));
         this.player = new Player(playerPosition, health, coins, speed);
+
+        /* UI */
+        this.playerUI = new PlayerUI(gameProps);
 
         // manage entry and exit point of door
         new ReadDoor(gameProps);
@@ -105,14 +112,19 @@ public class ShadowDungeon extends AbstractGame {
         }
     }
 
-    // player update
-    // If no point and isBoundary, just use 'playerUpdate(input, new Point[0], false)'
-    private void playerUpdate(Input input, Point[] points, boolean isBoundary) {
+    /* player update
+    * If no points and isWall and isRiver,
+    * just use 'playerUpdate(input, new Point[0], false, new Point[0], false);'
+    */
+    private void playerUpdate(Input input,
+                              Point[] wallBoundaries,
+                              boolean isWall,
+                              Point[] riverBoundaries,
+                              boolean isRiver) {
         // 3 pixels per frame for player
-        for (int i = 0; i < 3; i++) {
-            player.update(input, points, isBoundary);
-        }
+        player.update(input, wallBoundaries, isWall, riverBoundaries, isRiver);
     }
+
     /**
      * Render the relevant screen based on the keyboard input given by the user and the status of the gameplay.
      * @param input The current mouse/keyboard input.
@@ -127,26 +139,31 @@ public class ShadowDungeon extends AbstractGame {
             case "prep":
                 prepRoom.update(input);
                 positionUpdate(prepRoom.getDoors());
-                playerUpdate(input, new Point[0], false);
+                playerUpdate(input, new Point[0], false, new Point[0], false);
                 break;
             case "A":
                 battleRoomA.update(input);
                 positionUpdate(battleRoomA.getDoors());
                 enemiesUpdate(battleRoomA.getEnemies());
-                playerUpdate(input, battleRoomA.getWallPositions(), battleRoomA.isWall());
+                playerUpdate(input, battleRoomA.getWallPositions(), battleRoomA.isWall(),
+                        battleRoomA.getRiverPositions(), battleRoomA.isRiver());
                 break;
             case "B":
                 battleRoomB.update(input);
                 positionUpdate(battleRoomB.getDoors());
                 enemiesUpdate(battleRoomB.getEnemies());
-                playerUpdate(input, battleRoomB.getWallPositions(), battleRoomB.isWall());
+                playerUpdate(input, battleRoomB.getWallPositions(), battleRoomB.isWall(),
+                        battleRoomB.getRiverPositions(), battleRoomB.isRiver());
                 break;
             case "end":
                 endRoom.update(input);
                 positionUpdate(endRoom.getDoors());
-                playerUpdate(input, new Point[0], false);
+                playerUpdate(input, new Point[0], false, new Point[0], false);
                 break;
         }
+
+        // place at last, avoid be hidden
+        playerUI.draw(player);
     }
 
     /**

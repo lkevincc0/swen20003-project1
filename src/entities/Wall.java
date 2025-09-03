@@ -30,6 +30,8 @@ public class Wall {
 
     // get all positions, exposed to player
     public Point[] getPositions() { return positions; }
+
+    // get wall status
     public boolean isWall() {
         if (positions.length == 0 || positions == null) {
             return false;
@@ -37,6 +39,7 @@ public class Wall {
             return true;
         }
     }
+
     // draw
     public void draw() {
         if (positions == null || positions.length == 0) { return; }
