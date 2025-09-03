@@ -7,6 +7,7 @@ import bagel.Window;
 import bagel.util.Point;
 import entities.*;
 
+import java.util.Map;
 import java.util.Properties;
 
 public class BattleRoomA {
@@ -70,6 +71,14 @@ public class BattleRoomA {
 
     // get all positions of river
     public Point[] getRiverPositions() { return river.getPositions(); }
+
+    public Map<Point, Integer> getTreasureBoxes() {
+        return box.getBoxMap();
+    }
+
+    public Map<Point, Boolean> getTreasureStatus() {
+        return box.getOpenedMap();
+    }
 
     // reset
     public void reset(Properties gameProps) {

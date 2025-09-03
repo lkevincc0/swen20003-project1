@@ -1,4 +1,7 @@
 import bagel.*;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import bagel.util.Point;
@@ -122,9 +125,12 @@ public class ShadowDungeon extends AbstractGame {
                               Point[] riverBoundaries,
                               boolean isRiver,
                               Point[] restartBoundaries,
-                              boolean isRestart) {
+                              boolean isRestart,
+                              boolean isBox,
+                              Map<Point, Integer> boxMap,
+                              Map<Point, Boolean> openedMap) {
         // 3 pixels per frame for player
-        player.update(input, wallBoundaries, isWall, riverBoundaries, isRiver, restartBoundaries, isRestart);
+        player.update(input, wallBoundaries, isWall, riverBoundaries, isRiver, restartBoundaries, isRestart, isBox, boxMap, openedMap);
     }
 
     /* Game Reset */
@@ -150,8 +156,14 @@ public class ShadowDungeon extends AbstractGame {
             case "prep":
                 prepRoom.update(input);
                 positionUpdate(prepRoom.getDoors());
-                playerUpdate(input, new Point[0], false, new Point[0], false,
-                        prepRoom.getRestartPosition(), true);
+                playerUpdate(input,
+                        new Point[0], false,
+                        new Point[0], false,
+                        prepRoom.getRestartPosition(), true,
+                        false,
+                        new HashMap<Point, Integer>(),
+                        new HashMap<Point, Boolean>()
+                );
                 if (player.Restart) {
                     currRoom = "prep";
                     resetGame(GAME_PROPS);
@@ -162,8 +174,16 @@ public class ShadowDungeon extends AbstractGame {
                 battleRoomA.update(input);
                 positionUpdate(battleRoomA.getDoors());
                 enemiesUpdate(battleRoomA.getEnemies());
-                playerUpdate(input, battleRoomA.getWallPositions(), battleRoomA.isWall(),
-                        battleRoomA.getRiverPositions(), battleRoomA.isRiver(), new Point[0], false);
+                playerUpdate(input,
+                        battleRoomA.getWallPositions(),
+                        battleRoomA.isWall(),
+                        battleRoomA.getRiverPositions(),
+                        battleRoomA.isRiver(),
+                        new Point[0],
+                        false,
+                        true,
+                        battleRoomA.getTreasureBoxes(),
+                        battleRoomA.getTreasureStatus());
                 if (player.getHealth() <= 0) {
                     currRoom = "end";
                     endRoom.closeDoor();
@@ -173,8 +193,16 @@ public class ShadowDungeon extends AbstractGame {
                 battleRoomB.update(input);
                 positionUpdate(battleRoomB.getDoors());
                 enemiesUpdate(battleRoomB.getEnemies());
-                playerUpdate(input, battleRoomB.getWallPositions(), battleRoomB.isWall(),
-                        battleRoomB.getRiverPositions(), battleRoomB.isRiver(), new Point[0], false);
+                playerUpdate(input,
+                        battleRoomB.getWallPositions(),
+                        battleRoomB.isWall(),
+                        battleRoomB.getRiverPositions(),
+                        battleRoomB.isRiver(),
+                        new Point[0],
+                        false,
+                        true,
+                        battleRoomB.getTreasureBoxes(),
+                        battleRoomB.getTreasureStatus());
                 if (player.getHealth() <= 0) {
                     currRoom = "end";
                     endRoom.closeDoor();
@@ -183,8 +211,16 @@ public class ShadowDungeon extends AbstractGame {
             case "end":
                 endRoom.update(input, player, MESSAGE_PROPS);
                 positionUpdate(endRoom.getDoors());
-                playerUpdate(input, new Point[0], false, new Point[0], false,
-                        endRoom.getRestartPosition(), true);
+                playerUpdate(input,
+                        new Point[0],
+                        false,
+                        new Point[0],
+                        false,
+                        endRoom.getRestartPosition(),
+                        true,
+                        false,
+                        new HashMap<Point, Integer>(),
+                        new HashMap<Point, Boolean>());
                 if (player.Restart) {
                     currRoom = "prep";
                     resetGame(GAME_PROPS);

@@ -12,3 +12,4 @@
 - **3/9/2025** Finish River and its logic. Fix the bug of player update in frame. Finish UI of player status.
 - **3/9/2025** Fix some format in rooms. Add end prompt in EndRoom and logic of die and basic logic restart.
 - **3/9/2025** Create Hashmap to save treasure box, draw the Treasure Box in Room.
+- **3/9/2025** Complete the logic of treasure box of player.

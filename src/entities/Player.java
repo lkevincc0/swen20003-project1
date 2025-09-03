@@ -7,6 +7,7 @@ import bagel.Window;
 import bagel.util.Point;
 import bagel.util.Rectangle;
 
+import java.util.Map;
 import java.util.Properties;
 
 public class Player {
@@ -28,6 +29,7 @@ public class Player {
     private final Image wallImage;
     private final Image riverImage;
     private final Image restartImage;
+    private final Image boxImage;
 
     public Player(Point startPos, double health, int coins, int speed) {
         this.position = startPos;
@@ -37,10 +39,11 @@ public class Player {
         this.playerLeft = new Image("res/player_left.png");
         this.playerRight = new Image("res/player_right.png");
         this.facingRight = true;
-        // others
+        // images - used for get rectangle
         this.wallImage = new Image("res/wall.png");
         this.riverImage = new Image("res/river.png");
         this.restartImage = new Image("res/restart_area.png");
+        this.boxImage = new Image("res/treasure_box.png");
     }
 
     // player action logic
@@ -50,7 +53,11 @@ public class Player {
                       Point[] riverBoundaries,
                       boolean isRiver,
                       Point[] restartBoundaries,
-                      boolean isRestart) {
+                      boolean isRestart,
+                      boolean isBox,
+                      Map<Point, Integer> boxMap,
+                      Map<Point, Boolean> openedMap
+                      ) {
         /* according to input change position */
         double x = position.x;
         double y = position.y;
@@ -128,6 +135,19 @@ public class Player {
             }
         }
         // box
+        if (isBox) {
+            for (Point wp : boxMap.keySet()) {
+                Rectangle boxRect = boxImage.getBoundingBoxAt(wp);
+                if (getBoundingBox().intersects(boxRect)) {
+                    if (input.wasPressed(Keys.K) && !openedMap.get(wp)) {
+                        int coinsGained = boxMap.get(wp);
+                        addCoins(coinsGained);
+                        openedMap.put(wp, true);
+                        // System.out.println(wp + ", " + coinsGained);
+                    }
+                }
+            }
+        }
         position = new Point(x, y);
     }
 
@@ -156,7 +176,8 @@ public class Player {
 
     // get values
     public double getHealth() { return health; }
-    public double getCoins() { return coins; }
+    public int getCoins() { return coins; }
+    public void addCoins(int val) { coins += val; };
 
     // reset function
     public void reset(Properties gameProps) {
@@ -176,9 +197,12 @@ public class Player {
             Point[] riverBoundaries,
             boolean isRiver,
             Point[] restartBoundaries,
-            boolean isRestart) {
+            boolean isRestart,
+            boolean isBox,
+            Map<Point, Integer> boxMap,
+            Map<Point, Boolean> openedMap) {
         /* Regular update during game */
-        move(input, wallBoundaries, isWall, riverBoundaries, isRiver, restartBoundaries, isRestart);
+        move(input, wallBoundaries, isWall, riverBoundaries, isRiver, restartBoundaries, isRestart, isBox, boxMap, openedMap);
         Point mouse = input.getMousePosition();
         if (mouse.x >= position.x) {
             facingRight = true;

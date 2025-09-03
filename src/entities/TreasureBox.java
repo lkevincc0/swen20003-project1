@@ -2,7 +2,6 @@ package entities;
 
 import bagel.Image;
 import bagel.util.Point;
-import bagel.util.Rectangle;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +36,15 @@ public class TreasureBox {
         return boxMap.keySet().toArray(new Point[0]);
     }
 
+    // get hashmaps
+    public Map<Point, Integer> getBoxMap() {
+        return boxMap;
+    }
+
+    public Map<Point, Boolean> getOpenedMap() {
+        return openedMap;
+    }
+
     // get coin value by position
     public int getCoins(Point pos) {
         return boxMap.getOrDefault(pos, 0);
@@ -59,6 +67,7 @@ public class TreasureBox {
     public void draw() {
         for (Map.Entry<Point, Integer> entry : boxMap.entrySet()) {
             Point position = entry.getKey();
+            // only draw it not opened
             if (!openedMap.get(position)) {
                 body.draw(position.x, position.y);
             }
