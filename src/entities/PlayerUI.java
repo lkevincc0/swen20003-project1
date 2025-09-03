@@ -26,8 +26,12 @@ public class PlayerUI {
     }
 
     public void draw(Player player) {
-        font.drawString("HEALTH" + " " + String.format("%.1f", player.getHealth()),
-                healthStat.x, healthStat.y);
+        if (player.getHealth() >= 0) {
+            font.drawString("HEALTH" + " " + String.format("%.1f", player.getHealth()),
+                    healthStat.x, healthStat.y);
+        } else {
+            font.drawString("HEALTH" + "-0.0" , healthStat.x, healthStat.y);
+        }
         font.drawString("COINS" + " " + player.getCoins(), coinStat.x, coinStat.y);
     }
 }

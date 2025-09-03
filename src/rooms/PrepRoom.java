@@ -1,6 +1,7 @@
 package rooms;
 
 import bagel.*;
+import bagel.util.Point;
 import entities.Door;
 
 import java.util.Properties;
@@ -8,6 +9,8 @@ import java.util.Properties;
 
 public class PrepRoom {
     private final Image background;
+    private final Image restartArea;
+    private final Point restartPosition;
 
     private final Font titleFont;
     private final Font promptFont;
@@ -22,26 +25,32 @@ public class PrepRoom {
 
     public PrepRoom(Properties gameProps, Properties messageProps) {
         // background
-        background = new Image("res/background.png");
+        this.background = new Image("res/background.png");
+
+        // restart area
+        this.restartArea = new Image("res/restart_area.png");
+        String raw = gameProps.getProperty("restartarea.prep");
+        String[] parts = raw.split(",");
+        this.restartPosition = new Point(Double.parseDouble(parts[0]), Double.parseDouble(parts[1]));
 
         // font
         String fontFile = gameProps.getProperty("font");
         int titleSize = Integer.parseInt(gameProps.getProperty("title.fontSize"));
         int promptSize = Integer.parseInt(gameProps.getProperty("prompt.fontSize"));
 
-        titleFont = new Font(fontFile, titleSize);
-        promptFont = new Font(fontFile, promptSize);
+        this.titleFont = new Font(fontFile, titleSize);
+        this.promptFont = new Font(fontFile, promptSize);
 
         // text content
-        titleMessage = messageProps.getProperty("title");
-        moveMessage = messageProps.getProperty("moveMessage");
+        this.titleMessage = messageProps.getProperty("title");
+        this.moveMessage = messageProps.getProperty("moveMessage");
 
         // text pos
-        titleY = Double.parseDouble(gameProps.getProperty("title.y"));
-        moveMessageY = Double.parseDouble(gameProps.getProperty("moveMessage.y"));
+        this.titleY = Double.parseDouble(gameProps.getProperty("title.y"));
+        this.moveMessageY = Double.parseDouble(gameProps.getProperty("moveMessage.y"));
 
         // door to A
-        doorToA = new Door(gameProps, "door.prep");
+        this.doorToA = new Door(gameProps, "door.prep");
     }
 
     // get all doors in room
@@ -50,10 +59,15 @@ public class PrepRoom {
         return doors;
     }
 
+    // get restart positon
+    public Point[] getRestartPosition() { return new Point[]{ restartPosition }; }
 
     public void update(Input input) {
         // draw background
         background.draw(Window.getWidth()/2.0, Window.getHeight()/2.0);
+
+        // draw restart area
+        restartArea.draw(restartPosition.x, restartPosition.y);
 
         // title
         double titleX = (Window.getWidth() - titleFont.getWidth(titleMessage)) / 2.0;

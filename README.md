@@ -10,3 +10,4 @@
 - **3/9/2025** Finish door animation and only enter into door enemy will appear. Finish wall's draw and physics effect
   of wall to player. Rich the logic of wall in room.
 - **3/9/2025** Finish River and its logic. Fix the bug of player update in frame. Finish UI of player status.
+- **3/9/2025** Fix some format in rooms. Add end prompt in EndRoom and logic of die and basic logic restart.

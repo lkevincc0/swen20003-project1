@@ -37,12 +37,6 @@ public class ShadowDungeon extends AbstractGame {
 
         this.GAME_PROPS = gameProps;
         this.MESSAGE_PROPS = messageProps;
-        /* Room */
-        this.prepRoom = new PrepRoom(gameProps, messageProps);
-        this.battleRoomA = new BattleRoomA(gameProps, messageProps);
-        this.battleRoomB = new BattleRoomB(gameProps,messageProps);
-        this.endRoom = new EndRoom(gameProps, messageProps);
-
         /* Player */
         // position
         String posParams = gameProps.getProperty("player.start");
@@ -55,6 +49,12 @@ public class ShadowDungeon extends AbstractGame {
         // speed
         int speed = Integer.parseInt(gameProps.getProperty("movingSpeed"));
         this.player = new Player(playerPosition, health, coins, speed);
+
+        /* Room */
+        this.prepRoom = new PrepRoom(gameProps, messageProps);
+        this.battleRoomA = new BattleRoomA(gameProps, messageProps);
+        this.battleRoomB = new BattleRoomB(gameProps,messageProps);
+        this.endRoom = new EndRoom(gameProps, messageProps, player);
 
         /* UI */
         this.playerUI = new PlayerUI(gameProps);
@@ -120,9 +120,11 @@ public class ShadowDungeon extends AbstractGame {
                               Point[] wallBoundaries,
                               boolean isWall,
                               Point[] riverBoundaries,
-                              boolean isRiver) {
+                              boolean isRiver,
+                              Point[] restartBoundaries,
+                              boolean isRestart) {
         // 3 pixels per frame for player
-        player.update(input, wallBoundaries, isWall, riverBoundaries, isRiver);
+        player.update(input, wallBoundaries, isWall, riverBoundaries, isRiver, restartBoundaries, isRestart);
     }
 
     /**
@@ -139,26 +141,44 @@ public class ShadowDungeon extends AbstractGame {
             case "prep":
                 prepRoom.update(input);
                 positionUpdate(prepRoom.getDoors());
-                playerUpdate(input, new Point[0], false, new Point[0], false);
+                playerUpdate(input, new Point[0], false, new Point[0], false,
+                        prepRoom.getRestartPosition(), true);
+                if (player.Restart == true) {
+                    currRoom = "prep";
+                    System.out.println("restart");
+                }
+                player.Restart = false;
                 break;
             case "A":
                 battleRoomA.update(input);
                 positionUpdate(battleRoomA.getDoors());
                 enemiesUpdate(battleRoomA.getEnemies());
                 playerUpdate(input, battleRoomA.getWallPositions(), battleRoomA.isWall(),
-                        battleRoomA.getRiverPositions(), battleRoomA.isRiver());
+                        battleRoomA.getRiverPositions(), battleRoomA.isRiver(), new Point[0], false);
+                if (player.getHealth() <= 0) {
+                    currRoom = "end";
+                }
                 break;
             case "B":
                 battleRoomB.update(input);
                 positionUpdate(battleRoomB.getDoors());
                 enemiesUpdate(battleRoomB.getEnemies());
                 playerUpdate(input, battleRoomB.getWallPositions(), battleRoomB.isWall(),
-                        battleRoomB.getRiverPositions(), battleRoomB.isRiver());
+                        battleRoomB.getRiverPositions(), battleRoomB.isRiver(), new Point[0], false);
+                if (player.getHealth() <= 0) {
+                    currRoom = "end";
+                }
                 break;
             case "end":
-                endRoom.update(input);
+                endRoom.update(input, player, MESSAGE_PROPS);
                 positionUpdate(endRoom.getDoors());
-                playerUpdate(input, new Point[0], false, new Point[0], false);
+                playerUpdate(input, new Point[0], false, new Point[0], false,
+                        endRoom.getRestartPosition(), true);
+                if (player.Restart == true) {
+                    currRoom = "prep";
+                    System.out.println("restart");
+                }
+                player.Restart = false;
                 break;
         }
 

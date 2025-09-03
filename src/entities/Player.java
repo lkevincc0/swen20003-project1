@@ -16,12 +16,16 @@ public class Player {
     private Image playerRight;
     private boolean facingRight;
 
+    // game logic
+    public boolean Restart = false;
+
     // const damage values
     public final double riverDamagePerFrame = 0.2;
 
     // others
     private final Image wallImage;
     private final Image riverImage;
+    private final Image restartImage;
 
     public Player(Point startPos, double health, int coins, int speed) {
         this.position = startPos;
@@ -34,13 +38,17 @@ public class Player {
         // others
         this.wallImage = new Image("res/wall.png");
         this.riverImage = new Image("res/river.png");
+        this.restartImage = new Image("res/restart_area.png");
     }
 
+    // player action logic
     private void move(Input input,
                       Point[] wallBoundaries,
                       boolean isWall,
                       Point[] riverBoundaries,
-                      boolean isRiver) {
+                      boolean isRiver,
+                      Point[] restartBoundaries,
+                      boolean isRestart) {
         /* according to input change position */
         double x = position.x;
         double y = position.y;
@@ -101,11 +109,22 @@ public class Player {
                 Rectangle riverBox = riverImage.getBoundingBoxAt(wp);
                 if (playerBox.intersects(riverBox)) {
                     health -= riverDamagePerFrame;
-                    System.out.println(health);
+                    // System.out.println(health);
                 }
             }
         }
-
+        // restart area
+        if (isRestart) {
+            for (Point wp : restartBoundaries) {
+                Rectangle restartBox = restartImage.getBoundingBoxAt(wp);
+                if (playerBox.intersects(restartBox)) {
+                    // if press enter, restart
+                    if (input.wasPressed(Keys.ENTER)) {
+                        Restart = true;
+                    }
+                }
+            }
+        }
         position = new Point(x, y);
     }
 
@@ -142,9 +161,11 @@ public class Player {
             Point[] wallBoundaries,
             boolean isWall,
             Point[] riverBoundaries,
-            boolean isRiver) {
+            boolean isRiver,
+            Point[] restartBoundaries,
+            boolean isRestart) {
         /* Regular update during game */
-        move(input, wallBoundaries, isWall, riverBoundaries, isRiver);
+        move(input, wallBoundaries, isWall, riverBoundaries, isRiver, restartBoundaries, isRestart);
         Point mouse = input.getMousePosition();
         if (mouse.x >= position.x) {
             facingRight = true;

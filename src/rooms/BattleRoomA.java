@@ -28,20 +28,20 @@ public class BattleRoomA {
 
     public BattleRoomA(Properties gameProps, Properties messageProps) {
         // background
-        background = new Image("res/background.png");
+        this.background = new Image("res/background.png");
 
         // door to prep
-        doorToPrep = new Door(gameProps, "primarydoor.A");
-        doorToB = new Door(gameProps, "secondarydoor.A");
+        this.doorToPrep = new Door(gameProps, "primarydoor.A");
+        this.doorToB = new Door(gameProps, "secondarydoor.A");
 
         // enemies
-        enemy = new Enemies(gameProps, "keyBulletKin.A");
+        this.enemy = new Enemies(gameProps, "keyBulletKin.A");
 
         // wall
-        wall = new Wall(gameProps, "wall.A");
+        this.wall = new Wall(gameProps, "wall.A");
 
         // river
-        river = new River(gameProps, "river.A");
+        this.river = new River(gameProps, "river.A");
     }
 
     // get entities in room
