@@ -1,4 +1,4 @@
-# Shadow Dungeon - Project 1
+# SWEN20003 (Project 1) - Shadow Dungeon
 ## Note:
 ### My earlier commits show my GitHub username due to config. Latest commit uses my username of uni gitlab.
 ## Progress Log
