@@ -1,8 +1,9 @@
 # SWEN20003 (Project 1) - Shadow Dungeon
-## Note:
-### My earlier commits show my GitHub username due to config. Latest commit uses my username of uni gitlab.
-## Progress Log
+SWEN20003(2025s2) Project1
 
+---
+
+## Progress Log
 - **2/9/2025**: Start Project, Create Rooms and Doors class,  
   Still need to do in exist class, create a logic of player that interact with door,  
   if it don't do that it will open door at far place or open two door at same time.
